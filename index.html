@@ -150,7 +150,7 @@
     <div class="field">
       <label for="deloadReps">Max reps <span>(hell week)</span></label>
       <div class="input">
-        <input id="deloadReps" type="number" inputmode="decimal" min="1" step="0.5" placeholder="e.g. 12" aria-describedby="deloadErr">
+        <input id="deloadReps" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 12" aria-describedby="deloadErr">
         <span class="unit">reps</span>
       </div>
     </div>
@@ -161,17 +161,17 @@
       <div class="deload-card">
         <div class="label">Deload reps</div>
         <div class="value"><span id="deloadRepTarget">0</span> reps</div>
-        <div class="detail">50% of your hell-week max reps</div>
+        <div class="detail">50% of your hell-week max, rounded to a whole rep</div>
       </div>
       <div class="deload-card">
         <div class="label">Steps option 1</div>
         <div class="value"><span id="deloadSteps50">0</span> steps/day</div>
-        <div class="detail">50% of your hell-week average</div>
+        <div class="detail">50% of your hell-week average, rounded to 100 steps</div>
       </div>
       <div class="deload-card">
         <div class="label">Steps option 2</div>
         <div class="value"><span id="deloadStepsRange">0–0</span> steps/day</div>
-        <div class="detail">70–80% of your hell-week average</div>
+        <div class="detail">70–80% of your hell-week average, rounded to 100 steps</div>
       </div>
     </div>
     <p class="deload-note">Pick either step option based on how much recovery you need that week.</p>
@@ -187,7 +187,6 @@
   const deloadErr=document.getElementById('deloadErr'), deloadRepTarget=document.getElementById('deloadRepTarget');
   const deloadSteps50=document.getElementById('deloadSteps50'), deloadStepsRange=document.getElementById('deloadStepsRange');
   const fmt=n=>Math.round(n).toLocaleString('en-US');
-  const fmtReps=n=>Number.isInteger(n)?n.toLocaleString('en-US'):n.toLocaleString('en-US',{maximumFractionDigits:1});
   let week=1;
 
   for(let w=1;w<=15;w++){
@@ -233,9 +232,9 @@
       deloadEmpty.hidden=false;deloadFilled.hidden=true;
       deloadErr.textContent='Both values must be greater than 0.';deloadErr.style.display='block';return;
     }
-    deloadRepTarget.textContent=fmtReps(reps*.5);
-    deloadSteps50.textContent=fmt(steps*.5);
-    deloadStepsRange.textContent=fmt(steps*.7)+'–'+fmt(steps*.8);
+    deloadRepTarget.textContent=fmt(reps*.5);
+    deloadSteps50.textContent=fmt(Math.round(steps*.5/100)*100);
+    deloadStepsRange.textContent=fmt(Math.round(steps*.7/100)*100)+'–'+fmt(Math.round(steps*.8/100)*100);
     deloadEmpty.hidden=true;deloadFilled.hidden=false;
   }
   deloadSteps.addEventListener('input',calcDeload); deloadReps.addEventListener('input',calcDeload);
